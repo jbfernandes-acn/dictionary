@@ -48,3 +48,24 @@ code {
 .synonym {
   margin: 0.1rem;
 }
+
+h1,h2,h3 {
+  color: #095097; 
+}
+
+.wordOfTheDay {
+  color: white;
+}
+
+.listenIcon, .trashIcon {
+  color: #095097;
+}
+
+.favoriteIcon {
+  margin-left: auto;
+  color: #d97586;
+}
+
+.wordTitle {
+  display: flex;
+}

@@ -15,13 +15,13 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
+import Meaning from '../Meaning/Meaning'
 import { getWordFromAPI } from '../../../redux/actions/word'
 import { addFavorite, removeFavorite } from '../../../redux/actions/favorites'
 import { getWord, isWordLoading, checkIsFavorite } from '../../../redux/selectors'
+import { playWordSound } from '../../../resources/helpers'
 
 export default function WordDetailPage () {
-
-    const navigate = useNavigate()
 
     const word = useParams().word
     const dispatch = useDispatch()
@@ -31,7 +31,7 @@ export default function WordDetailPage () {
     let isFavoriteWord = useSelector(checkIsFavorite(word))
 
     useEffect(() => {
-        dispatch(getWordFromAPI(word));
+        dispatch(getWordFromAPI(word))
     }, [dispatch, word])
 
     const toggleFavorite = () => {
@@ -42,10 +42,8 @@ export default function WordDetailPage () {
         }
     }
 
-    const playWordSound = () => {
-        var synth = window.speechSynthesis;
-        var text = new SpeechSynthesisUtterance(word);
-        synth.speak(text);
+    const handlePlaySound = () => {
+        playWordSound(word)
     }
 
     console.log(wordInfo);
@@ -53,54 +51,42 @@ export default function WordDetailPage () {
     return (
         <>
             {
-                isLoading || !wordInfo ? 
-                <CircularProgress /> :
-                wordInfo === null ?
-                'Not found' :
+                isLoading 
+                ? 
+                <div className="centeredChildren">
+                    <CircularProgress size="3rem"/>
+                </div> 
+                :
+                wordInfo === null 
+                ?
+                <Typography variant="h3" align="center">Word not found</Typography> 
+                :
                 <>
-                    <IconButton onClick={playWordSound} edge="start" color="inherit" aria-label="menu">
-                        <VolumeUpIcon />
-                    </IconButton>
-                    <h2>{wordInfo.word}</h2>
-                    <p>{wordInfo.phonetic}</p>
-                    <IconButton onClick={toggleFavorite} edge="start" color="inherit" aria-label="menu">
-                        {
-                            isFavoriteWord ?
-                            <FavoriteIcon /> :
-                            <FavoriteBorderIcon />
-                        }
-                    </IconButton>
+                    <div className="wordTitle">
+                        <h2>{wordInfo.word}</h2>
+                        <div className="favoriteIcon" >
+                            <IconButton onClick={toggleFavorite} edge="start" color="inherit" aria-label="menu">
+                                {
+                                    isFavoriteWord ?
+                                    <FavoriteIcon/> :
+                                    <FavoriteBorderIcon/>
+                                }
+                            </IconButton>
+                        </div>
+                    </div>
+                        
+                    <div style={{display: 'flex'}}>
+                        <IconButton onClick={handlePlaySound} edge="start" color="inherit" aria-label="menu">
+                            <VolumeUpIcon className="listenIcon"/>
+                        </IconButton>
+                        <p>{wordInfo.phonetic}</p>
+                    </div>
+                    
                     {
                         wordInfo.meanings.map(meaning => 
-                            <div key={meaning.partOfSpeech} className="partOfSpeech">
-                                <Accordion defaultExpanded={true}>
-                                    <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    >
-                                    <Typography>{meaning.partOfSpeech}</Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {
-                                            meaning.synonyms.map((synonym, index) => 
-                                                <Chip label={synonym} className="synonym" onClick={() => navigate(`/words/${synonym}`)}/>
-                                            )
-                                        }
-                                        {
-                                            meaning.definitions.map((definition, index) => 
-                                                <div key={index}>
-                                                    <h5>{`${index + 1}. ${definition.definition}`}</h5>
-                                                    { definition.example && <p>"{definition.example}"</p> }
-                                                </div>
-                                            )
-                                        }
-                                    </AccordionDetails>
-                                </Accordion>
-                            </div>
+                            <Meaning key={meaning.partOfSpeech} meaning={meaning}/>
                         )
                     }
-
-                    <br/><br/><br/>
-                    <p>{JSON.stringify(wordInfo)}</p>
                 </>
             }
         </>

@@ -1,4 +1,4 @@
-import { START_WORD_REQUEST, END_WORD_REQUEST, SET_WORD } from '../actionTypes'
+import { START_WORD_REQUEST, END_WORD_REQUEST } from '../actionTypes'
 
 const initialState = {
     word: null,
@@ -13,7 +13,6 @@ export default (state = initialState, action) => {
                 isLoading: true
             }
         case END_WORD_REQUEST:
-            // if (action.notFound)
             return {
                 ...state,
                 word: action.word,

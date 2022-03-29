@@ -1,19 +1,22 @@
 import React, {useState, useEffect} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
 
+import { getWordOfTheDayFromAPI } from '../../../redux/actions/wordoftheday'
+import { getWordOfTheDay, isWordOfTheDayLoading } from '../../../redux/selectors'
+
 export default function WordOfTheDay () {
-    const [isLoading, setIsLoading] = useState(true)
-    const [wordOfTheDay, setWordOfTheDay] = useState('')
+    const wordOfTheDay = useSelector(getWordOfTheDay)
+    const isLoading = useSelector(isWordOfTheDayLoading)
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        fetch('https://random-word-api.herokuapp.com/word?number=1')
-            .then(response => response.json())
-            .then(words => {
-                setWordOfTheDay(words[0])
-                setIsLoading(false)
-            })
-    }, [])
+      if (!wordOfTheDay) {
+        dispatch(getWordOfTheDayFromAPI())
+      }
+    }, [dispatch])
 
     return (
       <div className="paddingTop centeredChildren">
@@ -22,6 +25,7 @@ export default function WordOfTheDay () {
             variant="h6"
             align="left"
             gutterBottom
+            color="#095097"
           >
               Word of the day
           </Typography>
@@ -29,10 +33,11 @@ export default function WordOfTheDay () {
             isLoading ?
             <CircularProgress /> :
             <Typography
-            component="h5"
-            variant="h5"
-            align="left"
-            gutterBottom
+              component="h5"
+              variant="h5"
+              align="left"
+              gutterBottom
+              className="wordOfTheDay"
             >
               {wordOfTheDay}
             </Typography>

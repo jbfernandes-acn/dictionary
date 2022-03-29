@@ -1,4 +1,4 @@
-import { START_WORD_REQUEST, END_WORD_REQUEST, SET_WORD } from '../actionTypes'
+import { START_WORD_REQUEST, END_WORD_REQUEST } from '../actionTypes'
 import axios from 'axios'
 
 

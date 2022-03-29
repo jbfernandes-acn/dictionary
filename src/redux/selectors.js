@@ -19,7 +19,7 @@ export const checkIsFavorite = (word) => (store) => {
 
 
 
-// PRODUCTS
+// WORD
 
 export const isWordLoading = (store) => {
     return store && store.word.isLoading
@@ -27,4 +27,16 @@ export const isWordLoading = (store) => {
 
 export const getWord = (store) => {
     return store && store.word.word
+}
+
+
+
+// WORD OF THE DAY
+
+export const isWordOfTheDayLoading = (store) => {
+    return store && store.wordoftheday.isLoading
+}
+
+export const getWordOfTheDay = (store) => {
+    return store && store.wordoftheday.wordOfTheDay
 }
